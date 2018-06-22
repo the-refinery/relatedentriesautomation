@@ -1,0 +1,72 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * relatedentriesautomation plugin for Craft CMS 3.x
+ *
+ * RelatedentriesautomationField Field Input
+ *
+ * @author    The Refinery
+ * @copyright Copyright (c) 2018 The Refinery
+ * @link      http://the-refinery.io/
+ * @package   Relatedentriesautomation
+ * @since     0.2.0
+ */
+#}
+
+{% set sections = craft.sections.getAllSections() %}
+
+{% import "_includes/forms" as forms %}
+
+{# {{ forms.textField({
+        label: 'Some Field',
+        instructions: 'Enter some text here.',
+        id: name,
+        name: name,
+        value: value})
+}} #}
+
+<div data-bind="visible: !active()">Inactive.</div>
+<div data-bind="visible: active()">
+	<div class="related-entries-top">Show <span class="entry-field-term" data-bind="text: limit"></span> entries sorted by <span class="entry-field-term" data-bind="text: orderLable"></span> <span data-bind="text: orderDir"></span></div>
+	<div class="entry-types" data-bind="foreach: entryTypes">
+		<div class="entry-type-row">
+			<span class="caps-text"><span data-bind="visible: $index">OR </span>FROM</span> <span class="entry-name" data-bind="text: name"></span>
+			<input type="hidden" data-bind="value: handle, attr: {name: $parent.craftFieldName($index(), 'handle')}">
+			<div class="entry-fields" data-bind="foreach: searchParams">
+				<div class="entry-field">
+					<span class="caps-text"><span data-bind="visible: $index">AND </span>WHERE </span>
+					<i><span data-bind="text: name"></span></i>
+					<span class="caps-text" data-bind="text: operatorName"></span>
+					<!-- ko if: (type() !== 'Categories') && (type() !== 'Entries') -->
+						<span class="entry-field-term" data-bind="text: value"></span> 
+					<!-- /ko -->
+					<!-- ko if: (type() === 'Categories') || (type() === 'Entries') -->
+						<span class="entry-field-term" data-bind="text: categoryTitle"></span>
+					<!-- /ko -->
+					<input type="hidden" data-bind="value: handle, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'handle')}">
+					<input type="hidden" data-bind="value: operator, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'operator')}">
+					<input type="hidden" data-bind="value: value, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'value')}">
+					<!-- ko if: (type() === 'Date') -->
+					days to Current Date.
+					<!-- /ko -->
+				</div>	
+			</div>
+		</div>
+	</div>
+</div>
+
+{# Hidden fields; values set with KO data-bindings which are not supported by craft #}
+<input type="hidden" id="{{ id ~ 'active' }}" name="{{ name ~ '[active]' }}" data-bind="value: active" >
+<input type="hidden" id="{{ id ~ 'limit' }}" name="{{ name ~ '[limit]' }}" data-bind="value: limit" >
+<input type="hidden" id="{{ id ~ 'order' }}" name="{{ name ~ '[order]' }}" data-bind="value: order" >
+<input type="hidden" id="{{ id ~ 'orderDir' }}" name="{{ name ~ '[orderDir]' }}" data-bind="value: orderDir" >
+{# {{ forms.hidden({
+    id: id ~ 'limit',
+    name: name ~ '[limit]',
+    value: values.limit
+}) }}  #}
+<div class="btn settings icon dashed open-modal-btn">Configure Query</div>
+
+<pre>
+    {# {{ values.attributes | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
+</pre>

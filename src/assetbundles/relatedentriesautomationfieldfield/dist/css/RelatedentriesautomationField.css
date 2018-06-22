@@ -1,0 +1,51 @@
+/**
+ * relatedentriesautomation plugin for Craft CMS
+ *
+ * RelatedentriesautomationField Field CSS
+ *
+ * @author    The Refinery
+ * @copyright Copyright (c) 2018 The Refinery
+ * @link      http://the-refinery.io/
+ * @package   Relatedentriesautomation
+ * @since     0.2.0
+ */
+
+.entry-types.editable{
+	padding-top: 1rem;
+}
+.entry-fields{
+	padding-left: 1rem;
+}
+.related-entries-top{
+	padding-bottom: 0.25rem;
+}
+.entry-type-row{
+	padding-bottom: 0.25rem;
+}
+.entry-field{
+	padding-bottom: 0.1rem;
+}
+.entry-field-term, .entry-name{
+	background: #ddd;
+	border-radius: 0.25rem;
+	display: inline-block;
+	padding: 0 0.25rem;
+}
+
+.caps-text{
+	font-size: 0.9em;
+	letter-spacing: 0.05em;
+}
+
+.entry-types .delete{
+	margin: 0 0.25rem;
+}
+
+.meta .entry-field{
+	min-height: 30px;
+}
+.entry-types select, select.fieldValue{
+	margin-right: 0.25rem;
+}
+
+

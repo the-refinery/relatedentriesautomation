@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * relatedentriesautomation plugin for Craft CMS
+ *
+ * RelatedentriesautomationField Field Settings
+ *
+ * @author    The Refinery
+ * @copyright Copyright (c) 2018 The Refinery
+ * @link      http://the-refinery.io/
+ * @package   Relatedentriesautomation
+ * @since     0.2.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("therefinery\\relatedentriesautomation\\assetbundles\\relatedentriesautomation\\RelatedentriesautomationAsset") %}
+
+{{ forms.textField({
+    label: 'Some Attribute',
+    instructions: 'Enter some attribute here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: field['someAttribute']})
+}}

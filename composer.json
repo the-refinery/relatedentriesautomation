@@ -1,0 +1,44 @@
+{
+    "name": "therefinery/relatedentriesautomation",
+    "description": "Provides a field specify selection criteria for providing related entries",
+    "type": "craft-plugin",
+    "version": "0.2.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "relatedentriesautomation"
+    ],
+    "support": {
+        "docs": "???",
+        "issues": "???"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "The Refinery",
+            "homepage": "http://the-refinery.io/"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "therefinery\\relatedentriesautomation\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "relatedentriesautomation",
+        "handle": "relatedentriesautomation",
+        "hasCpSettings": false,
+        "hasCpSection": false,
+        "changelogUrl": "???",
+        "components": {
+            "entriesFilterService": "therefinery\\relatedentriesautomation\\services\\EntriesFilterService",
+            "entriesinfoService": "therefinery\\relatedentriesautomation\\services\\EntriesinfoService"
+        },
+        "class": "therefinery\\relatedentriesautomation\\Relatedentriesautomation"
+    }
+}
