@@ -1,0 +1,102 @@
+
+
+id: 9391
+{
+	"entryTypes":[
+		{
+			"handle":"story",
+			"params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
+		},
+		{
+			"handle":"profile",
+			"params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
+		},
+		{
+			"handle":"sourcedStory",
+			"params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
+		}
+	],
+	"active":0,
+	"limit":"5",
+	"order":"postDate",
+	"orderDir":"desc"
+}
+
+id: 9327
+{
+	"entryTypes":[
+		{
+			"handle":"story",
+			"params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17985"
+		},{
+			"handle":"onlineStoryCategories",
+			"operator":"NOTRELATEDTO","value":"17969"}]
+		},{
+			"handle":"sourcedStory",
+			"params":[
+				{"handle":"targetAudience","operator":"RELATEDTO","value":"17985"},
+				{"handle":"onlineStoryCategories","operator":"NOTRELATEDTO","value":"17969"}
+			]
+		}
+	],
+	"active":1,
+	"limit":"6",
+	"order":"postDate",
+	"orderDir":"asc"
+}
+
+id: 9329
+{
+	"entryTypes":[
+		{
+			"handle":"sourcedStory",
+			"params":[
+				{"handle":"targetAudience","operator":"RELATEDTO","value":"17985"},
+				{"handle":"onlineStoryCategories","operator":"RELATEDTO","value":"17969"}
+			]
+		}
+	],
+	"active":0,
+	"limit":"3",
+	"order":"postDate",
+	"orderDir":"desc"
+}
+
+9395
+{
+	"entryTypes":[
+		{
+			"handle":"resourceHubs",
+			"params":[
+				{"handle":"title","operator":"LIKE","value":""}
+			]
+		}
+	],
+	"active":1,
+	"limit":"6",
+	"order":"title",
+	"orderDir":"desc"
+}
+
+9375
+{
+	"entryTypes":[
+		{"handle":"profile","params":[{"handle":"title","operator":"LIKE","value":"alumni"}]}
+	],
+	"active":0,
+	"limit":"3",
+	"order":"postDate","orderDir":"desc"
+}
+
+9360
+{
+	"entryTypes":[
+		{"handle":"profile","params":[
+			{"handle":"title","operator":"LIKE","value":""}
+		]}
+	],
+	"active":0,
+	"limit":"3",
+	"order":"postDate",
+	"orderDir":"desc"
+}

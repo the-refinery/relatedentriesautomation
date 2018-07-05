@@ -66,7 +66,9 @@ class DefaultController extends Controller
 
         $sections = array();
 
-        $entryTypes = craft()->relatedEntriesAutomation_entriesinfo->availableEntryTypes();
+        // $entryTypes = Craft()->relatedEntriesAutomation_entriesinfo->availableEntryTypes();
+        // $entryTypes = Relatedentriesautomation::getInstance()->entriesinfo->exampleService();
+        $entryTypes = Relatedentriesautomation::getInstance()->entriesinfo->availableEntryTypes();
 
         /* hierarchically organize entry types by section  */
         foreach ($entryTypes as $type) {
@@ -86,7 +88,8 @@ class DefaultController extends Controller
             }
         }
         /* strip out array keys so we can encode as JS array */
-        $this->returnJson(array_values($sections));
+        return $this->asJson(array_values($sections));
+        // return $this->asJson([$entryTypes]);
     }
 
     /**
@@ -103,9 +106,9 @@ class DefaultController extends Controller
         // $this->requireAdmin();
         $this->requireLogin();
 
-        $entryInfo = craft()->relatedEntriesAutomation_entriesinfo->ListEntryFields($typeHandle);
+        $entryInfo = Relatedentriesautomation::getInstance()->entriesinfo->ListEntryFields($typeHandle);
 
-        $this->returnJson($entryInfo);
+        return $this->asJson($entryInfo);
     }
 
     /**
@@ -143,6 +146,15 @@ class DefaultController extends Controller
         $this->returnJson($categories);
     }
 
+    public function actionDumpEntryFields($typeHandle){
+        // $this->requireAdmin();
+        $this->requireLogin();
+
+        $entryInfo = Relatedentriesautomation::getInstance()->entriesinfo->DumpEntryFields($typeHandle);
+
+        return "<pre>" . print_r($entryInfo,1) . "</pre>";
+    }
+
     /**
      * Handle a request going to our plugin's index action URL,
      * e.g.: actions/relatedentriesautomation/default
@@ -162,10 +174,10 @@ class DefaultController extends Controller
      *
      * @return mixed
      */
-    // public function actionDoSomething()
-    // {
-    //     $result = 'Welcome to the DefaultController actionDoSomething() method';
+    public function actionDoSomething()
+    {
+        $result = 'Welcome to the DefaultController actionDoSomething() method';
 
-    //     return $result;
-    // }
+        return $result;
+    }
 }

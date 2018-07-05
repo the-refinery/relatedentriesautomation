@@ -90,6 +90,12 @@ class Relatedentriesautomation extends Plugin
         // Add in our Twig extensions
         Craft::$app->view->registerTwigExtension(new RelatedentriesautomationTwigExtension());
 
+        // register services
+        $this->setComponents([
+            'entriesinfo' => $this->entriesinfoService,
+            'entriesfields' => $this->entriesFilterService,
+        ]);
+
         // Register our site routes
         Event::on(
             UrlManager::class,
@@ -105,6 +111,10 @@ class Relatedentriesautomation extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['cpActionTrigger1'] = 'relatedentriesautomation/default/do-something';
+                $event->rules['actionListAvailableEntryTypes'] = 'relatedentriesautomation/default/list-available-entry-types';
+                // lynnedu_admin/actions/RelatedEntriesAutomation/Entriesinfo/ListEntryFields&typeHandle=about
+                $event->rules['actionListEntryFields'] = 'relatedentriesautomation/default/list-entry-fields';
+                $event->rules['dumpEntryFields'] = 'relatedentriesautomation/default/dump-entry-fields';
             }
         );
 
@@ -124,7 +134,8 @@ class Relatedentriesautomation extends Plugin
             function (Event $event) {
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
-                $variable->set('relatedentriesautomation', RelatedentriesautomationVariable::class);
+                // $variable->set('relatedentriesautomation', RelatedentriesautomationVariable::class);
+                $variable->set('relatedentriesautomation', $this->entriesFilterService);
             }
         );
 

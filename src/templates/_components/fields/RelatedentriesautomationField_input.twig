@@ -25,8 +25,7 @@
         value: value})
 }} #}
 
-<div data-bind="visible: !active()">Inactive.</div>
-<div data-bind="visible: active()">
+<div NOdata-bind="visible: active()">
 	<div class="related-entries-top">Show <span class="entry-field-term" data-bind="text: limit"></span> entries sorted by <span class="entry-field-term" data-bind="text: orderLable"></span> <span data-bind="text: orderDir"></span></div>
 	<div class="entry-types" data-bind="foreach: entryTypes">
 		<div class="entry-type-row">
@@ -56,7 +55,6 @@
 </div>
 
 {# Hidden fields; values set with KO data-bindings which are not supported by craft #}
-<input type="hidden" id="{{ id ~ 'active' }}" name="{{ name ~ '[active]' }}" data-bind="value: active" >
 <input type="hidden" id="{{ id ~ 'limit' }}" name="{{ name ~ '[limit]' }}" data-bind="value: limit" >
 <input type="hidden" id="{{ id ~ 'order' }}" name="{{ name ~ '[order]' }}" data-bind="value: order" >
 <input type="hidden" id="{{ id ~ 'orderDir' }}" name="{{ name ~ '[orderDir]' }}" data-bind="value: orderDir" >
@@ -68,5 +66,5 @@
 <div class="btn settings icon dashed open-modal-btn">Configure Query</div>
 
 <pre>
-    {# {{ values.attributes | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
+    {# {{ value | json_encode(constant('JSON_PRETTY_PRINT')) }} #}
 </pre>

@@ -68,7 +68,7 @@
                 $footer = $('<footer class="footer"/>').appendTo($modal),
                 $buttons = $('<div class="buttons right"/>').appendTo($footer),
                 // $cancelBtn = $('<div class="btn modal-cancel">'+Craft.t('Cancel')+'</div>').appendTo($buttons);
-                $saveBtn = $('<div class="btn submit">'+Craft.t('Close')+'</div>').appendTo($buttons);
+                $saveBtn = $('<div class="btn submit">'+Craft.t('Close', 'Close')+'</div>').appendTo($buttons);
             
             
             var self = this;
@@ -81,7 +81,7 @@
                 self.modal.addListener($saveBtn, 'activate', self.modal.hide);
 
                 /* load Sections/Entries list */
-                var entryTypesUrl = Craft.getActionUrl('RelatedEntriesAutomation/Entriesinfo/ListAvailableEntryTypes');
+                var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-available-entry-types');
                 $.ajax({
                     method : 'GET',
                     url : entryTypesUrl
@@ -107,7 +107,7 @@
         var values = options.values;
         var fieldOptions = options.fieldOptions;
         var model = {
-            active: ko.observable((values.active === 1)), // force boolean
+            active: true, //ko.observable((values.active === 1)), // force boolean
             limit: ko.observable(values.limit),
             order: ko.observable(values.order),
             orderDir: ko.observable(values.orderDir),
@@ -175,7 +175,7 @@
             entryFields: ko.observableArray(),
             searchParams: ko.observableArray()
         };
-        var entryTypesUrl = Craft.getActionUrl('RelatedEntriesAutomation/Entriesinfo/ListEntryFields', { typeHandle: handle });
+        var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-entry-fields', { typeHandle: handle });
         $.ajax({
             method : 'GET',
             url : entryTypesUrl

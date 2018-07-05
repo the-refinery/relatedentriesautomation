@@ -19,6 +19,9 @@ use craft\base\Field;
 use craft\helpers\Db;
 use yii\db\Schema;
 use craft\helpers\Json;
+use craft\helpers\UrlHelper;
+
+use yii\BaseYii as Yii;
 
 /**
  * RelatedentriesautomationField Field
@@ -111,27 +114,7 @@ class RelatedentriesautomationField extends Field
      * JO: The value is an object encoded as a string. We'll need to decode value and fill in any
      * missing values
      *
-     * Sample raw value: 
-     * {
-     *     "entryTypes":[
-     *         {
-     *             "handle":"story",
-     *             "params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
-     *         },
-     *         {
-     *             "handle":"profile",
-     *             "params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
-     *         },
-     *         {
-     *             "handle":"sourcedStory",
-     *             "params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
-     *         }
-     *     ],
-     *     "active":0,
-     *     "limit":"5",
-     *     "order":"postDate",
-     *     "orderDir":"desc"
-     * }
+     * Sample raw value: See `sample_data.txt`
      *
      * @param mixed                 $value   The raw field value
      * @param ElementInterface|null $element The element the field is associated with, if there is one
@@ -140,7 +123,36 @@ class RelatedentriesautomationField extends Field
      */
     public function normalizeValue($value, ElementInterface $element = null)
     {
+        if (is_string($value)) {
+            $value = JSON::decode($value);
+        }
+        if(!$value){
+            $value = array();
+        }
 
+        $entryTypes = array();
+        if(isset($value['entryTypes'])){
+            foreach ($value['entryTypes'] as $entryType) {
+                //$typeAttr = craft()->sections->getEntryTypesByHandle($entryType['handle'])[0]->getAttributes();
+                $typeAttr = Craft::$app->sections->getEntryTypesByHandle($entryType['handle'])[0];
+                $entryObj = array(
+                    'handle' => $entryType['handle'],
+                    'name' => $typeAttr->name,
+                    'params' => isset($entryType['params']) ? $entryType['params'] : array()
+                );
+                $entryTypes[] = $entryObj;
+            }
+        }
+        $value['entryTypes'] = $entryTypes;
+
+        $value = array_merge(array(
+            'section'       => '',
+            'query'         => '',
+            'order'         => 'postDate',
+            'orderDir'      => 'asc',
+            'limit'         => 6,
+            'entryTypes'    => array()
+        ), $value);
         return $value;
     }
 
@@ -151,6 +163,9 @@ class RelatedentriesautomationField extends Field
      *
      * If the method returns `false`, the query will be stopped before it ever gets a chance to execute.
      *
+     * JO: needs to take a mixed value (array or object?) and return a string to be saved in the DB in a
+     * way that normalize value can decode.
+     *
      * @param ElementQueryInterface $query The element query
      * @param mixed                 $value The value that was set on this field’s corresponding [[ElementCriteriaModel]] param,
      *                                     if any.
@@ -159,6 +174,7 @@ class RelatedentriesautomationField extends Field
      */
     public function serializeValue($value, ElementInterface $element = null)
     {
+        $value = JSON::encode($value);
         return parent::serializeValue($value, $element);
     }
 
@@ -254,16 +270,16 @@ class RelatedentriesautomationField extends Field
      *
      * @return string|null
      */
-    public function getSettingsHtml()
-    {
-        // Render the settings template
-        return Craft::$app->getView()->renderTemplate(
-            'relatedentriesautomation/_components/fields/RelatedentriesautomationField_settings',
-            [
-                'field' => $this,
-            ]
-        );
-    }
+    // public function getSettingsHtml()
+    // {
+    //     // Render the settings template
+    //     return Craft::$app->getView()->renderTemplate(
+    //         'relatedentriesautomation/_components/fields/RelatedentriesautomationField_settings',
+    //         [
+    //             'field' => $this,
+    //         ]
+    //     );
+    // }
 
     /**
      * Returns the field’s input HTML.
@@ -377,6 +393,11 @@ class RelatedentriesautomationField extends Field
             'name' => $this->handle,
             'namespace' => $namespacedId,
             'prefix' => Craft::$app->getView()->namespaceInputId(''),
+            'fieldOptions' => $this->fieldOptions(),
+            'values' => $value,
+            // 'template' => UrlHelper::getResourceUrl('relatedentriesautomation/modalFields.html')
+            'template' => \Craft::$app->assetManager->getPublishedUrl('@therefinery/relatedentriesautomation/assetbundles/relatedentriesautomationfieldfield/dist/modalFields.html', true),
+            // 'templatepath' => Yii::getAlias('@therefinery/relatedentriesautomation') // for debugging
             ];
         $jsonVars = Json::encode($jsonVars);
         Craft::$app->getView()->registerJs("$('#{$namespacedId}-field').RelatedentriesautomationRelatedentriesautomationField(" . $jsonVars . ");");
@@ -392,5 +413,28 @@ class RelatedentriesautomationField extends Field
                 'namespacedId' => $namespacedId,
             ]
         );
+    }
+
+    /**
+     * Supplies additional JSON vars for sorting fields
+     * @return Array options 
+     */
+    private function fieldOptions(){
+        $extraInfo = array();
+        $extraInfo['orderingOptions'] = array(
+            array('value' => 'postDate', 'label' => 'Date Posted'),
+            array('value' => 'title', 'label' => 'Title'),
+            array('value' => 'expiryDate', 'label' => 'Expiry Date'),
+            array('value' => 'dateCreated', 'label' => 'Date Created'),
+            array('value' => 'dateUpdated', 'label' => 'Date Updated'),
+            array('value' => 'RAND()', 'label' => 'Random'),
+        );
+
+        $extraInfo['orderingDirections'] = array(
+            array('value' => 'desc', 'label' => 'Descending'),
+            array('value' => 'asc', 'label' => 'Ascending')
+        );
+
+        return $extraInfo;
     }
 }
