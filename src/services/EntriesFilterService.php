@@ -43,7 +43,7 @@ class EntriesFilterService extends Component
      * get a list of entry ids
      * ```twig
      * {% set entryIds = craft.relatedentriesautomation.buildEnityQuery(block.sourceCriteria) %}
-     * {% set relatedEntries = craft.entries(entryIds).visibility('not  hidden') %}
+    * {% set relatedEntries = craft.entries(entryIds).visibility('not  hidden') %}
      * ```
      * @param  [type] $criteria Relatedentriesautomation field raw data
      * @return array           List of Entry IDs
@@ -170,7 +170,7 @@ class EntriesFilterService extends Component
                     }
                     if($param['operator'] == 'RELATEDTO'){
                         $joinName = 'join_' . chr($char++);
-                        $this->entriesQuery->join('join', "{{relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId");
+                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId");
                         // $relations[] = $value;
                         $clause .= " AND {$joinName}.targetId = '{$value}' ";
                     }
@@ -196,14 +196,14 @@ class EntriesFilterService extends Component
                         // need fieldId 
                         $joinName = 'join_' . chr($char++);
                         $fieldId = $this->getFieldIdByHandle($param['handle']);
-                        $this->entriesQuery->join('join', "{{relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId");
+                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId");
                         $clause .= " AND {$joinName}.fieldId = {$fieldId}";
                     }
                     // check to see if asset field is empty
                     if($param['operator'] == 'UNSET'){
                         $joinName = 'join_' . chr($char++);
                         $fieldId = $this->getFieldIdByHandle($param['handle']);
-                        $this->entriesQuery->leftJoin("{{relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");
+                        $this->entriesQuery->leftJoin("{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");
                         $clause .= " AND {$joinName}.id IS NULL ";
                     }
                 }

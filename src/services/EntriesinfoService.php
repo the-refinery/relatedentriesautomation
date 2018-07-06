@@ -15,6 +15,8 @@ use therefinery\relatedentriesautomation\Relatedentriesautomation;
 use Craft;
 use craft\base\Component;
 use craft\db\Query;
+use craft\elements\Entry;
+use craft\elements\Category;
 
 /**
  * EntriesinfoService Service
@@ -32,19 +34,19 @@ use craft\db\Query;
 class EntriesinfoService extends Component
 {
     private $allowedFieldTypes = array(
-        'craft\fields\Lightswitch',
-        'craft\fields\PlainText',
-        'craft\fields\Date',
+        'Lightswitch',
+        'PlainText',
+        'Date',
         // 'RichText',
-        'craft\redactor\Field',
+        'Redactor',
         // 'Matrix',
-        'craft\fields\Categories',
-        'craft\fields\Entries',
-        'craft\fields\Assets',
-        'craft\fields\Dropdown',
-        'craft\fields\RadioButtons',
-        'craft\fields\Checkboxes',
-        'craft\fields\Number'
+        'Categories',
+        'Entries',
+        'Assets',
+        'Dropdown',
+        'RadioButtons',
+        'Checkboxes',
+        'Number'
     );
 
     // Public Methods
@@ -80,13 +82,13 @@ class EntriesinfoService extends Component
         );
         $entryInfo = array($titleField);
 
-        // $postDate = new FieldModel(array(
-        //     'id' => 0,
-        //     'type' => 'Date',
-        //     'name' => 'Post Date',
-        //     'handle' => 'postDate'
-        // ));
-        // $entryInfo[] = $postDate;
+        $postDate = array(
+            'id' => 0,
+            'type' => 'Date',
+            'name' => 'Post Date',
+            'handle' => 'postDate'
+        );
+        $entryInfo[] = $postDate;
 
         /**
          * Retrieve any entrytypes that match the $typeHandle
@@ -102,14 +104,122 @@ class EntriesinfoService extends Component
                 // if(in_array($field->type, $this->allowedFieldTypes)){
                 //     $entryInfo[] = $field;
                 // }
-                if(in_array(get_class($fieldModel), $this->allowedFieldTypes)){
-                    $entryInfo[] = $fieldModel;
+                $fieldType = $this->getFieldsType($fieldModel);
+                if(in_array($fieldType, $this->allowedFieldTypes)){
+                    // $entryInfo[] = $fieldModel;
+                    $entryInfo[] = array(
+                        'id' => $fieldModel['id'],
+                        'type' => $fieldType,
+                        'name' => $fieldModel['name'],
+                        'handle' => $fieldModel['handle']
+                    );
                 }
                 // $entryInfo[] = $fieldModel;
             }
         }
 
         return $entryInfo;
+    }
+
+    /**
+     * Gets a script usable FieldType name based on the field's class
+     * @param  Object $fieldInstance An entity field
+     * @return String                Usable field name
+     */
+    public function getFieldsType($fieldInstance){
+        $classname = get_class($fieldInstance);
+        if($classname === 'craft\redactor\Field'){
+            return 'Redactor';
+        }
+        if ($pos = strrpos($classname, '\\')){
+            return substr($classname, $pos + 1);
+        }
+        return $pos;
+    }
+
+    public function ListAvailableEntries($fieldHandle){
+        $field = Craft::$app->fields->getFieldByHandle($fieldHandle);
+        $attributes = $field->getAttributes();
+        $sources = array();
+        $entries = array();
+        if(isset($attributes['sources'])){
+            $sources = $attributes['sources'];
+            foreach($sources as $sourceData){
+                list($type, $sid) = explode(':', $sourceData);
+                if ($type === 'section') {
+                    $section = Craft::$app->sections->getSectionById($sid);
+                    
+                    // $criteria = Craft::$app->elements->getCriteria(ElementType::Entry);
+                    // $criteria->section = $section->getAttribute('handle');
+                    // $criteria->limit = null;
+                    // $sectionInfo = array(
+                    //     'attributes' => $section->getAttributes(),
+                    //     'entries' => array()
+                    // );
+                    $sectionInfo = $section->getAttributes();
+                    $sectionInfo['entries'] = array();
+
+                    $found = Entry::find()
+                        ->section($section->handle)
+                        ->all();
+
+                    foreach ($found as $entry) {
+                        $sectionInfo['entries'][] = array(
+                            'id' => $entry->id,
+                            'name' => $entry->title
+                        );
+                    }
+
+                    $entries[] = $sectionInfo;
+                }
+            }
+        }
+        return $entries;
+        // return array('attributes' => $attributes, 'entries' => $entries);
+    }
+
+    /**
+     * for the given fieldHandle (a category field) get the field's
+     * category group(s) and return a list of categories in that group 
+     * @param [type] $fieldHandle [description]
+     */
+    public function ListCategories($fieldHandle){
+        // $criteria = Craft::$app->elements->getCriteria(ElementType::Category);
+        $field = Craft::$app->fields->getFieldByHandle($fieldHandle);
+        // $groupHandle = $this->getCategoryFieldInfo($fieldHandle)['groupHandle'];
+
+        $categories = Category::find()
+            ->groupId(str_replace('group:', '', $field->source))
+            ->all();
+
+        // $criteria->group = $groupHandle; // this is actually the field name, we need to handle situations when the don't match
+
+        // $categories = $criteria->find();
+        
+        // $categories = Category::find()
+        //     ->section($section->handle)
+        //     ->all();
+        // $catData = array();
+        $catData = $this->loopCategories($categories, 1);
+
+        return $catData;
+        // return array('fieldinfo' => $field, 'group' => $categories, 'catData' => $catData);
+    }
+
+    private function loopCategories($categories, $level){
+        $catData = array();
+        foreach ($categories as $catObj) {
+            $catRecord = $catObj->getAttributes();
+            // $catData[] = $catRecord;
+            if($level === (int)$catRecord['level']){
+                $catRecord['title'] = $catObj->title;
+                if ($catObj->getHasDescendants()) {
+                    $catRecord['descendants'] = $this->loopCategories($catObj->getDescendants(), $level + 1);
+                }
+                $catData[] = $catRecord;
+            }
+        }
+        return $catData;
     }
 
     public function DumpEntryFields($typeHandle){

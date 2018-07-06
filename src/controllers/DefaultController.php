@@ -124,15 +124,15 @@ class DefaultController extends Controller
         // $this->requireAdmin();
         $this->requireLogin();
 
-        $categories = craft()->relatedEntriesAutomation_entriesinfo->ListCategories($groupHandle);
+        $categories = Relatedentriesautomation::getInstance()->entriesinfo->ListCategories($groupHandle);
 
-        $this->returnJson($categories);
+        return $this->asJson($categories);
     }
 
     /**
      * [actionListAvailableEntries description]
      *
-     * Action path: /actions/relatedEntriesAutomation/entriesinfo/listAvailableEntries?fieldHandle=contactInfo
+     * Action path: /actions/relatedentriesautomation/default/list-available-entries&fieldHandle=department
      * 
      * @param  [type] $fieldHandle [description]
      * @return [type]              [description]
@@ -141,9 +141,10 @@ class DefaultController extends Controller
         // $this->requireAdmin();
         $this->requireLogin();
 
-        $categories = craft()->relatedEntriesAutomation_entriesinfo->ListAvailableEntries($fieldHandle);
+        $categories = Relatedentriesautomation::getInstance()->entriesinfo->ListAvailableEntries($fieldHandle);
 
-        $this->returnJson($categories);
+        // return "<pre>" . print_r($categories) . "</pre>";
+        return $this->asJson($categories);
     }
 
     public function actionDumpEntryFields($typeHandle){

@@ -321,7 +321,7 @@
     }
 
     function loadCategories(model, groupHandle){
-        var categoryGroupUrl = Craft.getActionUrl('RelatedEntriesAutomation/Entriesinfo/ListCategories', { groupHandle: groupHandle });
+        var categoryGroupUrl = Craft.getActionUrl('relatedentriesautomation/default/list-categories', { groupHandle: groupHandle });
         $.ajax({
             method : 'GET',
             url : categoryGroupUrl
@@ -332,7 +332,7 @@
         });
     }
     function loadEntries(model, fieldHandle){
-        var categoryGroupUrl = Craft.getActionUrl('RelatedEntriesAutomation/Entriesinfo/ListAvailableEntries', { fieldHandle: fieldHandle });
+        var categoryGroupUrl = Craft.getActionUrl('relatedentriesautomation/default/list-available-entries', { fieldHandle: fieldHandle });
         $.ajax({
             method : 'GET',
             url : categoryGroupUrl

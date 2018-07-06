@@ -115,6 +115,8 @@ class Relatedentriesautomation extends Plugin
                 // lynnedu_admin/actions/RelatedEntriesAutomation/Entriesinfo/ListEntryFields&typeHandle=about
                 $event->rules['actionListEntryFields'] = 'relatedentriesautomation/default/list-entry-fields';
                 $event->rules['dumpEntryFields'] = 'relatedentriesautomation/default/dump-entry-fields';
+                $event->rules['actionListAvailableEntries'] = 'relatedentriesautomation/default/list-available-entries';
+                $event->rules['actionListCategories'] = 'relatedentriesautomation/default/list-categories';
             }
         );
 
