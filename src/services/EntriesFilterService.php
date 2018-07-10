@@ -82,7 +82,7 @@ class EntriesFilterService extends Component
         }
 
         $result = $this->entriesQuery->all();
-        $query = "";//$this->entriesQuery->getRawSql();
+        $query = $this->entriesQuery->getRawSql();
 
         return array('query' => $query, 'result' => $result);
     }
@@ -159,6 +159,8 @@ class EntriesFilterService extends Component
 
             if (isset($query['params'])) {
                 foreach ($query['params'] as $param) {
+                    $field = Craft::$app->fields->getFieldByHandle($param['handle']);
+                    $fieldId = $field->id;
                     $fieldName = 'field_' . $param['handle'];
                     if($param['handle'] === 'title' OR $param['handle'] === 'postDate'){
                         $fieldName = $param['handle'];
@@ -170,7 +172,7 @@ class EntriesFilterService extends Component
                     }
                     if($param['operator'] == 'RELATEDTO'){
                         $joinName = 'join_' . chr($char++);
-                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId");
+                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");
                         // $relations[] = $value;
                         $clause .= " AND {$joinName}.targetId = '{$value}' ";
                     }
@@ -178,10 +180,21 @@ class EntriesFilterService extends Component
                         $joinName = 'join_' . chr($char++);
                         $this->entriesQuery->leftJoin(
                             "{{%relations}} {$joinName}", 
-                            "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.targetId = '{$value}'"
+                            "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.targetId = '{$value}' AND {$joinName}.fieldId = {$fieldId}"
                         );
                         // $relations[] = $value;
                         $clause .= " AND {$joinName}.targetId IS NULL ";
+                    }
+                    if($param['operator'] == 'ISONEOF'){
+                        $joinName = 'join_' . chr($char++);
+                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");
+                        $clause .= " AND {$joinName}.targetId IN({$value}) ";
+                    }
+                    if($param['operator'] == 'ISNOTONEOF'){
+                       $joinName = 'join_' . chr($char++);
+                        $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");
+                        $clause .= " AND {$joinName}.targetId NOT IN({$value}) ";
+                       
                     }
                     if($param['operator'] == '+' or $param['operator'] == '-'){
                         $operator = $param['operator'] == '+' ? '<' : '>';
@@ -221,7 +234,7 @@ class EntriesFilterService extends Component
 
     public function getFieldIdByHandle($handle){
         $fields = (new Query())
-        ->from('fields')
+        ->from('{{%fields}}')
         ->select('{{%fields}}.id, {{%fields}}.handle')
         ->where(array('handle' => $handle))
         ->all();

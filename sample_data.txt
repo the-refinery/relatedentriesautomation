@@ -13,7 +13,7 @@ id: 9391
 		},
 		{
 			"handle":"sourcedStory",
-			"params":[{"handle":"targetAudience","operator":"RELATEDTO","value":"17989"}]
+			"params":[{"handle":"targetAudience","operator":"ISONEOF","value":["17989","17985"]}]
 		}
 	],
 	"active":0,
@@ -100,3 +100,112 @@ id: 9329
 	"order":"postDate",
 	"orderDir":"desc"
 }
+
+
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`\
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( ( `typeId` = 144 ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+    
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( 
+	( `typeId` = 144 AND join_A.targetId = '17989'  ) 
+)
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( 
+	( `typeId` = 144 AND join_A.targetId IN(17989,17985,17991)  
+) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( ( `typeId` = 144 AND join_A.targetId NOT IN(17989)  ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+  
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId
+join `craft_relations` `join_B` ON `craft_entries`.id = join_B.sourceId
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( 
+	( `typeId` = 144 AND join_A.targetId = '17985'  AND join_B.targetId NOT IN(17969,17975)  ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId
+join `craft_relations` `join_B` ON `craft_entries`.id = join_B.sourceId AND join_B.fieldId = 566
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( 
+	( `typeId` = 144 AND join_A.targetId = '17985'  AND join_B.targetId NOT IN(17969,17975)  ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+ 
+
+
+
+# Without Multi Queries
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId AND join_A.fieldId = 570
+LEFT JOIN `craft_relations` `join_B` ON `craft_entries`.id = join_B.sourceId AND join_B.targetId = '17969' AND join_B.fieldId = 566
+LEFT JOIN `craft_relations` `join_C` ON `craft_entries`.id = join_C.sourceId AND join_C.targetId = '17975' AND join_C.fieldId = 566
+join `craft_relations` `join_D` ON `craft_entries`.id = join_D.sourceId AND join_D.fieldId = 570
+LEFT JOIN `craft_relations` `join_E` ON `craft_entries`.id = join_E.sourceId AND join_E.targetId = '17969' AND join_E.fieldId = 566
+LEFT JOIN `craft_relations` `join_F` ON `craft_entries`.id = join_F.sourceId AND join_F.targetId = '17975' AND join_F.fieldId = 566
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( ( `typeId` = 144 AND join_A.targetId = '17985'  AND join_B.targetId IS NULL  AND join_C.targetId IS NULL  )  OR  ( `typeId` = 146 AND join_D.targetId = '17985'  AND join_E.targetId IS NULL  AND join_F.targetId IS NULL  ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+  
+
+
+# Using Multi Queries
+SELECT `craft_entries`.`id`, `craft_entries`.`sectionId`, `craft_entries`.`typeId`
+FROM `craft_entries`
+join `craft_elements` ON `craft_entries`.id = `craft_elements`.id
+join `craft_content` ON `craft_entries`.id = `craft_content`.elementId
+join `craft_relations` `join_A` ON `craft_entries`.id = join_A.sourceId AND join_A.fieldId = 570
+join `craft_relations` `join_B` ON `craft_entries`.id = join_B.sourceId AND join_B.fieldId = 566
+join `craft_relations` `join_C` ON `craft_entries`.id = join_C.sourceId AND join_C.fieldId = 570
+join `craft_relations` `join_D` ON `craft_entries`.id = join_D.sourceId AND join_D.fieldId = 566
+WHERE (`craft_elements`.enabled = 1 AND (`craft_entries`.expiryDate IS NULL OR `craft_entries`.expiryDate > NOW() )) AND (`craft_entries`.postDate < NOW()) AND ( ( `typeId` = 144 AND join_A.targetId = '17985'  AND join_B.targetId NOT IN(17969,17975)  )  OR  ( `typeId` = 146 AND join_C.targetId = '17985'  AND join_D.targetId NOT IN(17969,17975)  ) )
+GROUP BY `craft_entries`.`id`
+ORDER BY `craft_entries`.`postDate`
+LIMIT 6
+   
+

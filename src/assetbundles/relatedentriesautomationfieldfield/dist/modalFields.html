@@ -50,6 +50,7 @@
 							<i>Loading category for <span data-bind="text: value"></span></i>
 						</span>
 						<span data-bind="if: availableCategories().length">
+							<!-- ko if: multiSelect -->
 							<select class="fieldValue" data-bind="foreach: availableCategories, value: value">
 								<option data-bind="text: title, value: id"></option>
 								<!-- ko if: descendants().length -->
@@ -58,6 +59,18 @@
 								</optgroup>
 								<!-- /ko -->
 							</select>
+							<span class="btn icon add" data-bind="click: addCategory">Category</span>
+							<!-- /ko -->
+							<!-- ko ifnot: multiSelect -->
+							<select class="fieldValue" data-bind="foreach: availableCategories, value: value">
+								<option data-bind="text: title, value: id"></option>
+								<!-- ko if: descendants().length -->
+								<optgroup data-bind="attr: {label: title}, foreach: descendants">
+									<option data-bind="text: title, value: id"></option>
+								</optgroup>
+								<!-- /ko -->
+							</select>
+							<!-- /ko -->
 						</span>
 						<!-- /ko -->
 						<!-- ko if: (type() === 'Entries') -->
@@ -87,6 +100,11 @@
 						<span class="icon delete" data-bind="click: $parent.removeParam"></span>
 						<!-- ko if: ($index() === ($parent.searchParams().length - 1)) -->
 						<span class="icon add" data-bind="click: $parent.addParam"></span>
+						<!-- /ko -->
+						<!-- ko if: multiSelect -->
+						<div data-bind="foreach: multiValues">
+							<span class="entry-field-term" data-bind="text: $parent.printCatTitle($data)"></span><span class="icon delete" data-bind="click: $parent.removeCategory"></span> 
+						</div>
 						<!-- /ko -->
 					</div>	
 				</div>

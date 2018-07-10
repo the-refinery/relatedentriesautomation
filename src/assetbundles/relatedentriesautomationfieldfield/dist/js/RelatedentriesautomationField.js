@@ -64,7 +64,7 @@
             var values = this.options.values;
             // Setup modal HTML
             var $modal = $('<form id="' + this.element.id + '-modal" class="modal elementselectormodal smartmap-modal-address-search"/>').appendTo(Garnish.$bod),
-                $body = $('<div class="body"/>').appendTo($modal),
+                $body = $('<div class="body scroll-me"/>').appendTo($modal),
                 $footer = $('<footer class="footer"/>').appendTo($modal),
                 $buttons = $('<div class="buttons right"/>').appendTo($footer),
                 // $cancelBtn = $('<div class="btn modal-cancel">'+Craft.t('Cancel')+'</div>').appendTo($buttons);
@@ -217,9 +217,23 @@
             selectedField: ko.observable(selectedField),
             operator: ko.observable(data.operator || false),
             value: ko.observable(data.value || null),
+            multiValues: ko.observableArray(),
             availableCategories: ko.observableArray(),
             // selectedFieldEditable: ko.observable(data.selectedFieldEditable || false)
         };
+
+        if(data.operator === "ISONEOF" || data.operator === "ISNOTONEOF"){
+            model.value(null);
+            model.multiValues(data.value.split(','));
+        }
+
+        model.valueToSave = ko.computed(function valueToSave(){
+            if(this.operator() === "ISONEOF" || this.operator() === "ISNOTONEOF"){
+                return this.multiValues();
+            }else{
+                return this.value();
+            }
+        }, model);
 
         model.name = ko.pureComputed(function searchParamsName(){
             return this.selectedField().name;
@@ -251,6 +265,23 @@
             return availOps;
         }, model).extend({ notify: 'always' });
 
+        model.multiSelect = ko.computed(function (){
+            if(this.operator() === 'ISONEOF' || this.operator() === 'ISNOTONEOF'){
+                return true;
+            }else{
+                return false;
+            }
+        }, model);
+
+        model.addCategory = function addCategory(){
+            // console.log('addCategory', model.value());
+            model.multiValues.push(model.value());
+        };
+        model.removeCategory = function removeCategory(value){
+            // console.log('removeCategory', value);
+            model.multiValues.remove(value);
+        };
+
         model.operatorName = ko.computed(function operatorName(){
            var op = this.operator();
            // console.log('operatorName', op);
@@ -274,6 +305,10 @@
             // return titles.join(', ');
             return findCategoryTitle(this.value(), this.availableCategories());
         }, model);
+
+        model.printCatTitle = function printCatTitle(value){
+            return findCategoryTitle(value, model.availableCategories());
+        };
 
         /**
          * Pevent user from changing the selected field once a model.value has been set.
@@ -349,8 +384,12 @@
         }];
         switch(type){
             case 'Categories':
-                ops = [{ value: 'RELATEDTO', name: 'IS'},
-                { value: 'NOTRELATEDTO', name: 'IS NOT'}];
+                ops = [
+                    { value: 'RELATEDTO', name: 'IS'},
+                    { value: 'NOTRELATEDTO', name: 'IS NOT'},
+                    { value: 'ISONEOF', name: 'IS ONE OF'},
+                    { value: 'ISNOTONEOF', name: 'IS NOT ONE OF'},
+                ];
             break;
             case 'Entries':
                 ops = [{ value: 'RELATEDTO', name: 'IS'}];

@@ -40,14 +40,22 @@
 						<span class="entry-field-term" data-bind="text: value"></span> 
 					<!-- /ko -->
 					<!-- ko if: (type() === 'Categories') || (type() === 'Entries') -->
+						<!-- ko if: multiSelect -->
+						<span data-bind="foreach: multiValues">
+							<span class="entry-field-term" data-bind="text: $parent.printCatTitle($data)"></span>  
+						</span>
+						<!-- /ko -->
+						<!-- ko ifnot: multiSelect -->
 						<span class="entry-field-term" data-bind="text: categoryTitle"></span>
+						<!-- /ko -->
 					<!-- /ko -->
 					<input type="hidden" data-bind="value: handle, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'handle')}">
 					<input type="hidden" data-bind="value: operator, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'operator')}">
-					<input type="hidden" data-bind="value: value, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'value')}">
+					<input type="hidden" data-bind="value: valueToSave, attr: {name: $parents[1].craftFieldName($parentContext.$index(), 'params', $index(), 'value')}">
 					<!-- ko if: (type() === 'Date') -->
 					days to Current Date.
 					<!-- /ko -->
+					
 				</div>	
 			</div>
 		</div>

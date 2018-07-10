@@ -13,6 +13,16 @@ Calling the field by itself will return an object that defines the query criteri
 ```
 `relatedEntries` contains a list of entries you can iterate over using `{% for entry in relatedEntries %}` or a similar twig function.
 
+## debuging output in templates
+It's possible to outut the SQL that's used to fetch the result set to the page.
+
+```twig
+{% set queryinfo = craft.relatedentriesautomation.filterEntries(block.sourceCriteria) %}
+{% set entryIds = craft.relatedentriesautomation.entityQueryWithIds(queryinfo.result) %}
+<pre>{{ queryinfo | json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+{% set relatedEntries = craft.entries(entryIds).visibility('not  hidden') %}
+```
+
 
 ## Requirements
 

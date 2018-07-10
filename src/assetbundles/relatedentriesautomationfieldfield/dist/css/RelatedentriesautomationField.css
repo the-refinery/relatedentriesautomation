@@ -48,4 +48,6 @@
 	margin-right: 0.25rem;
 }
 
-
+.body.scroll-me{
+	overflow: auto;
+}
