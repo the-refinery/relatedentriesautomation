@@ -402,6 +402,9 @@
                 ops = [{ value: 'ISSET', name: 'SET'},
                 { value: 'UNSET', name: 'NOT SET'}];
                 break;
+            case 'Lightswitch':
+                ops = [{ value: 'SWITCH', name: 'IS'}];
+                break;
         }
         return ops;
     }

@@ -170,6 +170,11 @@ class EntriesFilterService extends Component
                         $value = "%".$value.'%';
                         $clause .= " AND {{%content}}.{$fieldName} {$param['operator']} '{$value}' ";
                     }
+                    if($param['operator'] === 'SWITCH'){
+                        $value = $value ? 1:0;
+                        // $value = "%".$value.'%';
+                        $clause .= " AND {{%content}}.{$fieldName} = {$value} ";
+                    }
                     if($param['operator'] == 'RELATEDTO'){
                         $joinName = 'join_' . chr($char++);
                         $this->entriesQuery->join('join', "{{%relations}} {$joinName}", "{{%entries}}.id = {$joinName}.sourceId AND {$joinName}.fieldId = {$fieldId}");

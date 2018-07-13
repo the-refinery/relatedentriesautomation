@@ -34,7 +34,7 @@
 					<div class="entry-field">
 						<span class="caps-text"><span data-bind="visible: $index">AND </span>WHERE </span> 
 						<select data-bind="options: $parent.entryFields, optionsText: 'name', optionsValue: $data, value: selectedField, enable: selectedFieldEditable"></select>
-						<!-- ko if: (type() !== 'Date' && (type() !== 'Assets')) -->
+						<!-- ko if: (type() !== 'Date' && (type() !== 'Assets') && (type() !== 'Lightswitch')) -->
 							<!-- ko if: availableOperators().length > 1 -->
 								<select data-bind="options: availableOperators, optionsText: 'name', optionsValue: 'value', value: operator"></select>
 							<!-- /ko -->
@@ -42,8 +42,11 @@
 								<span data-bind="text: operatorName"></span>
 							<!-- /ko -->
 						<!-- /ko -->
-						<!-- ko if: ((type() !== 'Categories') &&(type() !== 'Entries') && (type() !== 'Date') && (type() !== 'Assets')) -->
+						<!-- ko if: ((type() !== 'Categories') &&(type() !== 'Entries') && (type() !== 'Date') && (type() !== 'Assets') && (type() !== 'Lightswitch')) -->
 						<input type="text" class="text" data-bind="textInput: value">
+						<!-- /ko -->
+						<!-- ko if: (type() === 'Lightswitch') -->
+						<input type="checkbox" data-bind="checked: value" /> IS TRUE
 						<!-- /ko -->
 						<!-- ko if: (type() === 'Categories') -->
 						<span data-bind="ifnot: availableCategories().length">
