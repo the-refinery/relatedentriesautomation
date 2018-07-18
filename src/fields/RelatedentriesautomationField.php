@@ -150,7 +150,7 @@ class RelatedentriesautomationField extends Field
             'query'         => '',
             'order'         => 'postDate',
             'orderDir'      => 'asc',
-            'limit'         => 6,
+            'limit'         => 0,
             'entryTypes'    => array()
         ), $value);
         return $value;
