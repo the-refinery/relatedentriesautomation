@@ -161,6 +161,7 @@ class EntriesinfoService extends Component
 
                     $found = Entry::find()
                         ->section($section->handle)
+                        ->orderBy('title asc')
                         ->all();
 
                     foreach ($found as $entry) {
