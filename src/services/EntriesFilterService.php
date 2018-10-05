@@ -159,11 +159,12 @@ class EntriesFilterService extends Component
 
             if (isset($query['params'])) {
                 foreach ($query['params'] as $param) {
-                    $field = Craft::$app->fields->getFieldByHandle($param['handle']);
-                    $fieldId = $field->id;
-                    $fieldName = 'field_' . $param['handle'];
                     if($param['handle'] === 'title' OR $param['handle'] === 'postDate'){
                         $fieldName = $param['handle'];
+                    }else{
+                        $field = Craft::$app->fields->getFieldByHandle($param['handle']);
+                        $fieldId = $field->id;
+                        $fieldName = 'field_' . $param['handle'];
                     }
                     $value = $param['value'];
                     if($param['operator'] === 'LIKE'){
