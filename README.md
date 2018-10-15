@@ -2,8 +2,6 @@
 
 Provides a field specify selection criteria for providing related entries
 
-![Screenshot](resources/img/plugin-logo.png)
-
 ## Using with templates
 Calling the field by itself will return an object that defines the query criteria for finding related entries. To turn this raw data into a set of useful entries you have to pass it into a filter service function that can build a real-time query and return a list of entity ids for related entries. The easyist way to do that is to use the `craft.relatedentriesautomation.buildEnityQuery()` function.
 
@@ -23,10 +21,9 @@ It's possible to outut the SQL that's used to fetch the result set to the page.
 {% set relatedEntries = craft.entries(entryIds).visibility('not  hidden') %}
 ```
 
-
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
@@ -36,28 +33,18 @@ To install the plugin, follow these instructions.
 
         cd /path/to/project
 
-2. Then tell Composer to load the plugin:
+2. Manually add the repository to your composer.json since this plugin is not listed on packagist
 
-        composer require /relatedentriesautomation
+        "repositories": [
+            {
+                "type": "git",
+                "url": "https://github.com/the-refinery/relatedentriesautomation.git",
+                "reference": "origin/master"
+            }
+        ]
 
-3. In the Control Panel, go to Settings → Plugins and click the “Install” button for relatedentriesautomation.
+3. Then install the plugin:
 
-## relatedentriesautomation Overview
+		composer require the-refinery/relatedentriesautomation
 
--Insert text here-
-
-## Configuring relatedentriesautomation
-
--Insert text here-
-
-## Using relatedentriesautomation
-
--Insert text here-
-
-## relatedentriesautomation Roadmap
-
-Some things to do, and ideas for potential features:
-
-* Release it
-
-Brought to you by [The Refinery](http://the-refinery.io/)
+4. In the Control Panel, go to Settings → Plugins and click the “Install” button for RelatedEntriesAutomation.
