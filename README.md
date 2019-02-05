@@ -33,17 +33,8 @@ To install the plugin, follow these instructions.
 
         cd /path/to/project
 
-2. Manually add the repository to your composer.json since this plugin is not listed on packagist
-
-        "repositories": [
-            {
-                "type": "github",
-		"url": "git@github.com:the-refinery/relatedentriesautomation.git"
-            }
-        ]
-
-3. Then install the plugin:
+2. Then install the plugin:
 
 		composer require the-refinery/relatedentriesautomation
 
-4. In the Control Panel, go to Settings → Plugins and click the “Install” button for RelatedEntriesAutomation.
+3. In the Control Panel, go to Settings → Plugins and click the “Install” button for RelatedEntriesAutomation.
