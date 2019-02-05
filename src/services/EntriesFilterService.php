@@ -68,7 +68,7 @@ class EntriesFilterService extends Component
         ->where('{{%elements}}.enabled = 1 AND ({{%entries}}.expiryDate IS NULL OR {{%entries}}.expiryDate > NOW() )')
         ->andWhere('{{%entries}}.postDate < NOW()')
         ->addOrderBy($this->orderClause($criteria))
-        ->addGroupBy('{{%entries}}.id')
+        ->distinct()
         ->limit($criteria['limit']);
 
         // additional WHERE clause for each entryType
