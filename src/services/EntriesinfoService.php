@@ -57,6 +57,7 @@ class EntriesinfoService extends Component
         ->from('{{%sections}}')
         ->select('craft_sections.id, craft_sections.name as section, craft_sections.handle as sectionHandle, craft_sections.type, craft_entrytypes.name as name, craft_entrytypes.handle as handle')
         ->where('type != "single"')
+        ->andWhere('craft_entrytypes.dateDeleted IS NULL')
         ->join('join', '{{%entrytypes}}', 'craft_entrytypes.sectionId=craft_sections.id')
         ->addOrderBy('{{%sections}}.name')
         ->all();
