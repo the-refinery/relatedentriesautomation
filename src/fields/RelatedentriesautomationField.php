@@ -134,10 +134,10 @@ class RelatedentriesautomationField extends Field
         if(isset($value['entryTypes'])){
             foreach ($value['entryTypes'] as $entryType) {
                 //$typeAttr = craft()->sections->getEntryTypesByHandle($entryType['handle'])[0]->getAttributes();
-                $typeAttr = Craft::$app->sections->getEntryTypesByHandle($entryType['handle'])[0];
+                $typeAttr = Craft::$app->sections->getEntryTypesByHandle($entryType['handle']);
                 $entryObj = array(
                     'handle' => $entryType['handle'],
-                    'name' => $typeAttr->name,
+                    'name' => sizeof($typeAttr) > 0 ? $typeAttr[0]->name : $entryType['handle'],
                     'params' => isset($entryType['params']) ? $entryType['params'] : array()
                 );
                 $entryTypes[] = $entryObj;
