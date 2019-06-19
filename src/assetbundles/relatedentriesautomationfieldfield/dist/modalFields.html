@@ -1,27 +1,32 @@
-<div class="meta">
-	<div class="field"><div class="heading"><lable class="required" for="limit">Limit</lable></div><div class="input ltr"><input type="text" class="text" size="4" data-bind="textInput: limit" /> </div> </div>
-	<div class="field"><div class="heading"><lable class="required" for="limit">Order By</lable></div>
+	<div class="field"><div class="heading"><label class="required" for="limit">Limit</label></div><div class="input ltr"><input type="text" class="text" size="4" data-bind="textInput: limit" /> </div> </div>
+	<div class="field">
+		<div class="heading"><label class="required" for="limit">Order By</label></div>
 		<div class="input ltr">
-			<select data-bind="options: orderingOptions, optionsText: 'label', optionsValue: 'value', value: order"></select>
-			<select data-bind="options: orderingDirections, optionsText: 'label', optionsValue: 'value', value: orderDir"></select>
+			<div class="select">
+				<select data-bind="options: orderingOptions, optionsText: 'label', optionsValue: 'value', value: order"></select>
+			</div>
+			<div class="select">
+				<select data-bind="options: orderingDirections, optionsText: 'label', optionsValue: 'value', value: orderDir"></select>
+			</div>
 		</div>
 	</div>
 	<div class="field">
-		<div class="heading"><lable class="required" for="limit">Sections</lable></div>
+		<div class="heading"><label class="required" for="limit">Sections</label></div>
 		<div class="input ltr">
 			<span data-bind="ifnot: entryInfo.entryTypes().length">Loading Sections &amp; Entry Types</span>
 			<span data-bind="if: entryInfo.entryTypes().length">
-				
-				<select class="fieldValue" data-bind="foreach: entryInfo.entryTypes, value: selectedEntry">
-					<!-- ko if: entries.length > 1 -->
-					<optgroup data-bind="attr: {label: name}, foreach: entries">
+				<div class="select">
+					<select class="fieldValue" data-bind="foreach: entryInfo.entryTypes, value: selectedEntry">
+						<!-- ko if: entries.length > 1 -->
+						<optgroup data-bind="attr: {label: name}, foreach: entries">
+							<option data-bind="text: name, value: $data"></option>
+						</optgroup>
+						<!-- /ko -->
+						<!-- ko if: entries.length == 1 -->
 						<option data-bind="text: name, value: $data"></option>
-					</optgroup>
-					<!-- /ko -->
-					<!-- ko if: entries.length == 1 -->
-					<option data-bind="text: name, value: $data"></option>
-					<!-- /ko -->
-				</select>
+						<!-- /ko -->
+					</select>
+				</div>
 				<div class="btn icon add" data-bind="click: addSelectedSection">Add to query</div>
 			</span>
 		</div>
@@ -114,4 +119,3 @@
 			</div>
 		</div>
 	</div>
-</div>            

@@ -63,7 +63,7 @@
             // console.log(this);
             var values = this.options.values;
             // Setup modal HTML
-            var $modal = $('<form id="' + this.element.id + '-modal" class="modal elementselectormodal smartmap-modal-address-search"/>').appendTo(Garnish.$bod),
+            var $modal = $('<form id="' + this.element.id + '-modal" class="modal elementselectormodal"/>').appendTo(Garnish.$bod),
                 $body = $('<div class="body scroll-me"/>').appendTo($modal),
                 $footer = $('<footer class="footer"/>').appendTo($modal),
                 $buttons = $('<div class="buttons right"/>').appendTo($footer),

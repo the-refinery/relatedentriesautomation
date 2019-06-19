@@ -41,13 +41,6 @@
 	margin: 0 0.25rem;
 }
 
-.meta .entry-field{
-	min-height: 30px;
-}
-.entry-types select, select.fieldValue{
-	margin-right: 0.25rem;
-}
-
 .body.scroll-me{
 	overflow: auto;
 }
