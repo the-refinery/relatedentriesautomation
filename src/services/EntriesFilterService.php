@@ -68,7 +68,7 @@ class EntriesFilterService extends Component
         ->where('{{%elements}}.enabled = 1 AND ({{%entries}}.expiryDate IS NULL OR {{%entries}}.expiryDate > NOW() )')
         ->andWhere('{{%entries}}.postDate < NOW()')
         ->addOrderBy($this->orderClause($criteria))
-        ->distinct()
+        ->distinct() // MySQL 5.7 requires ORDER BY fields to be in select list (unless `ONLY_FULL_GROUP_BY` is deactivated in config)
         ->limit($criteria['limit']);
 
         // additional WHERE clause for each entryType
@@ -153,8 +153,13 @@ class EntriesFilterService extends Component
         $char = 65;
 
         foreach ($entryParams as $query) {
-            $attributes = Craft::$app->sections->getEntryTypesByHandle($query['handle'])[0]->getAttributes();
-            $clause = "`typeId` = {$attributes['id']}";
+
+            if(isset($query['typeid'])){
+                $clause = "`typeId` = {$query['typeid']}";
+            } else {
+                $attributes = Craft::$app->sections->getEntryTypesByHandle($query['handle'])[0]->getAttributes();
+                $clause = "`typeId` = {$attributes['id']}";
+            }
             $relations = array();
 
             if (isset($query['params'])) {

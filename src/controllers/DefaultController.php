@@ -75,6 +75,7 @@ class DefaultController extends Controller
             $sectionHandle = $type['sectionHandle'];
             $entry = array(
                 'handle' => $type['handle'],
+                'typeid' => $type['typeid'],
                 'name' => $type['name']
             );
             if(isset($sections[$sectionHandle])){

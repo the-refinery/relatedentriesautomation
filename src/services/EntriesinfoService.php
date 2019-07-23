@@ -55,7 +55,7 @@ class EntriesinfoService extends Component
     {
         $sections = (new Query())
         ->from('{{%sections}}')
-        ->select('craft_sections.id, craft_sections.name as section, craft_sections.handle as sectionHandle, craft_sections.type, craft_entrytypes.name as name, craft_entrytypes.handle as handle')
+        ->select('craft_sections.id, craft_sections.name as section, craft_sections.handle as sectionHandle, craft_sections.type, craft_entrytypes.name as name, craft_entrytypes.handle as handle, craft_entrytypes.id as typeid')
         ->where('type != "single"')
         ->andWhere('craft_entrytypes.dateDeleted IS NULL')
         ->join('join', '{{%entrytypes}}', 'craft_entrytypes.sectionId=craft_sections.id')
@@ -66,6 +66,24 @@ class EntriesinfoService extends Component
     }
 
     public function ListEntryFields($typeHandle){
+        // Is this ID or a handle
+        $entryFields = false;
+        if(is_numeric($typeHandle)){
+            $entryType = Craft::$app->sections->getEntryTypeById($typeHandle);
+            if(count($entryType)){
+                // $entryType[0] is an EntryModel
+                $entryFields = $entryType->getFieldLayout()->getFields();
+            }
+        } else {
+            /**
+             * Retrieve any entrytypes that match the $typeHandle
+             */
+            $entryType = Craft::$app->sections->getEntryTypesByHandle($typeHandle);
+            if(count($entryType)){
+                // $entryType[0] is an EntryModel
+                $entryFields = $entryType[0]->getFieldLayout()->getFields();
+            }
+        }
         /**
          * title and postDate fields are not returned by `getFieldLayout` so we'll fake it
          */
@@ -91,14 +109,11 @@ class EntriesinfoService extends Component
         );
         $entryInfo[] = $postDate;
 
-        /**
-         * Retrieve any entrytypes that match the $typeHandle
-         */
-        $entryType = Craft::$app->sections->getEntryTypesByHandle($typeHandle);
+        
 
-        if(count($entryType)){
+        if(count($entryFields)){
             // $entryType[0] is an EntryModel
-            $entryFields = $entryType[0]->getFieldLayout()->getFields();
+            // $entryFields = $entryType[0]->getFieldLayout()->getFields();
             // $entryFields is an array of FieldLayoutFieldModel[]
             foreach ($entryFields as $fieldModel) {
                 // $field = $fieldModel->getField(); // returns FieldModel

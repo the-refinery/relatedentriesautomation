@@ -18,6 +18,7 @@
 
     // Plugin constructor
     function Plugin( element, options ) {
+        console.log('options', options);
         this.element = element;
 
         this.options = $.extend( {}, defaults, options) ;
@@ -41,8 +42,10 @@
                 /* -- _this.options gives us access to the $jsonVars that our FieldType passed down to us */
                 var elId = _this.element.id; // fields-associateEntriesBy-field
 
-                /* Create a knockout model for two-way binding of form values */
+                /* calling `list-available-entry-types` action on each new instance so we can replace `handle`s with `typeid`s */
+                _this.loadSectionsEntries();
 
+                /* Create a knockout model for two-way binding of form values */
                 _this.datamodel = createFieldModel(_this.options, _this.entryInfoModel);
                 ko.applyBindings(_this.datamodel, document.getElementById(elId));
 
@@ -80,25 +83,31 @@
                 ko.applyBindings(self.datamodel, document.getElementById(self.element.id + '-modal'));
                 self.modal.addListener($saveBtn, 'activate', self.modal.hide);
 
-                /* load Sections/Entries list */
-                var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-available-entry-types');
-                $.ajax({
-                    method : 'GET',
-                    url : entryTypesUrl
-                })
-                .done(function(data){
-                    // console.log(data);
-                    ko.utils.arrayPushAll(self.datamodel.entryInfo.entryTypes, data);
-                });
+                // self.loadSectionsEntries();
 
                 // search for Category fields and setup JS actions for each
             });
             
         },
+
+        loadSectionsEntries: function loadSectionsEntries(){
+            var self = this;
+            /* load Sections/Entries list */
+            var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-available-entry-types');
+            $.ajax({
+                method : 'GET',
+                url : entryTypesUrl
+            })
+            .done(function(data){
+                // console.log(data);
+                ko.utils.arrayPushAll(self.datamodel.entryInfo.entryTypes, data);
+                // updateExistingEntryModels(self.datamodel.entryInfo.entryTypes, data);
+            });
+        }
     };
 
     function createFieldModel(options, entryInfoModel){
-        // console.log('createFieldModel options', options);
+        console.log('createFieldModel options', options);
         //var prefix = options.prefix.replace('-', '');
         var namspaceArr = options.namespace.split('-');
         var prefix = namspaceArr.shift();
@@ -163,19 +172,27 @@
     }
 
     function createSectionEntryModel(entry){
-        // console.log('createSectionEntryModel', entry);
+        console.log('createSectionEntryModel Input', entry);
         var params = entry.params || [];
         var handle = entry.handle;
+        var typeid;
+        if(entry.typeid){
+            typeid = entry.typeid;
+        } else {
+            console.log('createSectionEntryModel typeid missing!');
+        }
+
         // if (typeof entry.handle === 'object') {
         //     handle = entry.handle.handle;
         // }
         var model = {
             handle: ko.observable(handle),
+            typeid: ko.observable(typeid),
             name: ko.observable(entry.name),
             entryFields: ko.observableArray(),
             searchParams: ko.observableArray()
         };
-        var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-entry-fields', { typeHandle: handle });
+        var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-entry-fields', { typeHandle: typeid || handle });
         $.ajax({
             method : 'GET',
             url : entryTypesUrl
@@ -194,6 +211,7 @@
         model.removeParam = function removeParam(param){
             model.searchParams.remove(param);
         };
+        // console.log('createSectionEntryModel Output', model);
         
         return model;
     }

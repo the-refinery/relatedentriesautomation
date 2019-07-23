@@ -30,7 +30,12 @@
 	<div class="entry-types" data-bind="foreach: entryTypes">
 		<div class="entry-type-row">
 			<span class="caps-text"><span data-bind="visible: $index">OR </span>FROM</span> <span class="entry-name" data-bind="text: name"></span>
-			<input type="hidden" data-bind="value: handle, attr: {name: $parent.craftFieldName($index(), 'handle')}">
+      <!-- ko ifnot: typeid -->
+      <input type="hidden" data-bind="value: handle, attr: {name: $parent.craftFieldName($index(), 'handle')}">
+      <!-- /ko -->
+      <!-- ko if: typeid -->
+			<input type="hidden" data-bind="value: typeid, attr: {name: $parent.craftFieldName($index(), 'typeid')}">
+      <!-- /ko -->
 			<div class="entry-fields" data-bind="foreach: searchParams">
 				<div class="entry-field">
 					<span class="caps-text"><span data-bind="visible: $index">AND </span>WHERE </span>
