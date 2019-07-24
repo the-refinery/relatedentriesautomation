@@ -205,8 +205,9 @@ class EntriesinfoService extends Component
         $field = Craft::$app->fields->getFieldByHandle($fieldHandle);
         // $groupHandle = $this->getCategoryFieldInfo($fieldHandle)['groupHandle'];
 
+        $categoryGroup = Craft::$app->categories->getGroupByUid(str_replace('group:', '', $field->source));
         $categories = Category::find()
-            ->groupId(str_replace('group:', '', $field->source))
+            ->groupId($categoryGroup->id)
             ->all();
 
         // $criteria->group = $groupHandle; // this is actually the field name, we need to handle situations when the don't match
@@ -216,16 +217,16 @@ class EntriesinfoService extends Component
         // $categories = Category::find()
         //     ->section($section->handle)
         //     ->all();
-        // $catData = array();
+        $catData = array();
         $catData = $this->loopCategories($categories, 1);
 
         return $catData;
-        // return array('fieldinfo' => $field, 'group' => $categories, 'catData' => $catData);
+        // return array('fieldinfo' => $field, 'group' => $categoryGroup, 'categories'=>$categories, 'catData' => $catData);
     }
 
-    private function loopCategories($categories, $level){
+    private function loopCategories($categoryGroup, $level){
         $catData = array();
-        foreach ($categories as $catObj) {
+        foreach ($categoryGroup as $catObj) {
             $catRecord = $catObj->getAttributes();
             // $catData[] = $catRecord;
             if($level === (int)$catRecord['level']){

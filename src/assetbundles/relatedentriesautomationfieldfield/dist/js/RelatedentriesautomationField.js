@@ -43,7 +43,7 @@
                 var elId = _this.element.id; // fields-associateEntriesBy-field
 
                 /* calling `list-available-entry-types` action on each new instance so we can replace `handle`s with `typeid`s */
-                _this.loadSectionsEntries();
+                // _this.loadSectionsEntries();
 
                 /* Create a knockout model for two-way binding of form values */
                 _this.datamodel = createFieldModel(_this.options, _this.entryInfoModel);
@@ -83,7 +83,7 @@
                 ko.applyBindings(self.datamodel, document.getElementById(self.element.id + '-modal'));
                 self.modal.addListener($saveBtn, 'activate', self.modal.hide);
 
-                // self.loadSectionsEntries();
+                self.loadSectionsEntries();
 
                 // search for Category fields and setup JS actions for each
             });
