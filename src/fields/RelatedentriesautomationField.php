@@ -139,6 +139,7 @@ class RelatedentriesautomationField extends Field
                 } else {
                     $types = Craft::$app->sections->getEntryTypesByHandle($entryType['handle']);
                     $typeAttr = sizeof($types) ? $types[0] : false;
+                    $entryType['typeid'] = $typeAttr->id;
                 }
                 
                 $entryObj = array(
