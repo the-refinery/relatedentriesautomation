@@ -34,7 +34,7 @@
 			<div class="entry-type-row">
 				<span class="caps-text"><span data-bind="visible: $index">OR </span>FROM</span> 
 				<span class="entry-name" data-bind="text: name"></span>
-				<div class="icon delete" data-bind="click: $parent.removeSelectedSection"></div>
+				<div class="icon delete" data-bind="click: $parent.removeSelectedSection"></div><span class="deleted-entry-type" data-bind="visible: typeDeleted"> DELETED or REPLACE</span>
 				<div class="entry-fields" data-bind="foreach: searchParams">
 					<div class="entry-field">
 						<span class="caps-text"><span data-bind="visible: $index">AND </span>WHERE </span> 

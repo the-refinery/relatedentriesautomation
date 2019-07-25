@@ -125,15 +125,18 @@
             orderingOptions: fieldOptions.orderingOptions,
             orderingDirections: fieldOptions.orderingDirections,
             entryInfo: entryInfoModel,
-            entryTypeFieldName: 'fields[' + options.name + '][entryTypes][]'
+            entryTypeFieldName: 'fields[' + options.name + '][entryTypes][]',
+            typesDeleted: ko.observableArray(values.typesDeleted)
         };
         model.addSelectedSection = function addSelectedSection(){
             // console.log('addSelectedSecion ', this.selectedEntry());
             this.entryTypes.push(createSectionEntryModel(this.selectedEntry()));
         };
         model.removeSelectedSection = function removeSelectedSection(entryType){
-            // console.log('remove this thing', entryType);
+            console.log('remove this thing', entryType);
             model.entryTypes.remove(entryType);
+            // remove from `typesDeleted` if needed
+            model.typesDeleted.remove(entryType.handle());
         };
 
         //  fields-customBlocks-13270-fields-similarPosts
@@ -175,6 +178,7 @@
         console.log('createSectionEntryModel Input', entry);
         var params = entry.params || [];
         var handle = entry.handle;
+        var typeDeleted = entry.typeDeleted || false;
         var typeid;
         if(entry.typeid){
             typeid = entry.typeid;
@@ -190,7 +194,8 @@
             typeid: ko.observable(typeid),
             name: ko.observable(entry.name),
             entryFields: ko.observableArray(),
-            searchParams: ko.observableArray()
+            searchParams: ko.observableArray(),
+            typeDeleted: ko.observable(typeDeleted)
         };
         var entryTypesUrl = Craft.getActionUrl('relatedentriesautomation/default/list-entry-fields', { typeHandle: typeid || handle });
         $.ajax({
@@ -230,7 +235,14 @@
             // find field handle in feildlist and set selectedField
             selectedField = $.grep(fieldList, function(f){ return f.handle == data.handle; })[0];
         }
-        // console.log('createSearchParams', data, selectedField);
+        console.log('createSearchParams', data, selectedField);
+        if(!selectedField){
+            selectedField = data;
+            selectedField.handle = data.handle + '_DELETED';
+            selectedField.name = data.handle;
+            selectedField.type = 'DELETED';
+            fieldListFunction.push(selectedField);
+        }
         var model = {
             selectedField: ko.observable(selectedField),
             operator: ko.observable(data.operator || false),
@@ -422,6 +434,9 @@
                 break;
             case 'Lightswitch':
                 ops = [{ value: 'SWITCH', name: 'IS'}];
+                break;
+            case 'DELETED':
+                ops = [{ value: 'LIKE', name: 'CONTAINS'}];
                 break;
         }
         return ops;

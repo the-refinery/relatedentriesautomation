@@ -27,9 +27,16 @@
 
 <div NOdata-bind="visible: active()">
 	<div class="related-entries-top">Show <span class="entry-field-term" data-bind="text: limit"></span> entries sorted by <span class="entry-field-term" data-bind="text: orderLable"></span> <span data-bind="text: orderDir"></span></div>
+  <div class="deleted-types-found" data-bind="visible: typesDeleted().length > 0">
+    One or more types in your query have been deleted:
+    <div data-bind="foreach: typesDeleted">
+      <b data-bind="text: $data"></b><br>
+    </div>
+    Please remove them from the query before saving.
+  </div>
 	<div class="entry-types" data-bind="foreach: entryTypes">
-		<div class="entry-type-row">
-			<span class="caps-text"><span data-bind="visible: $index">OR </span>FROM</span> <span class="entry-name" data-bind="text: name"></span>
+		<div class="entry-type-row" data-bind="css: {'type-deleted': typeDeleted}">
+			<span class="caps-text"><span data-bind="visible: $index">OR </span>FROM</span> <span class="entry-name" data-bind="text: name"></span><span class="deleted-entry-type" data-bind="visible: typeDeleted"> TYPE DELETED</span>
       <!-- ko ifnot: typeid -->
       <input type="hidden" data-bind="value: handle, attr: {name: $parent.craftFieldName($index(), 'handle')}">
       <!-- /ko -->

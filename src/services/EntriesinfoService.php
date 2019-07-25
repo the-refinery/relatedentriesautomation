@@ -67,7 +67,7 @@ class EntriesinfoService extends Component
 
     public function ListEntryFields($typeHandle){
         // Is this ID or a handle
-        $entryFields = false;
+        $entryFields = array();
         if(is_numeric($typeHandle)){
             $entryType = Craft::$app->sections->getEntryTypeById($typeHandle);
             if(count($entryType)){

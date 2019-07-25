@@ -139,14 +139,28 @@ class RelatedentriesautomationField extends Field
                 } else {
                     $types = Craft::$app->sections->getEntryTypesByHandle($entryType['handle']);
                     $typeAttr = sizeof($types) ? $types[0] : false;
-                    $entryType['typeid'] = $typeAttr->id;
+                    $entryType['typeid'] = is_object($typeAttr) ? $typeAttr->id : $entryType['handle'];
+                }
+
+                if(!is_object($typeAttr)){
+                    // entryType has likely been deleted, we need to notify the user so they can update query
+                    $entryType['typeDeleted'] = true;
+                    if(isset($value['typesDeleted'])){
+                        $value['typesDeleted'][] = $entryType['handle'];
+                    } else{
+                        $value['typesDeleted'] = array($entryType['handle']);
+                    }
+                    $entryObj = $entryType;
+                } else {
+                    $entryObj = array(
+                        'typeid' => $entryType['typeid'],
+                        'name' => is_object($typeAttr) ? $typeAttr->name : $entryType['handle'],
+                        'params' => isset($entryType['params']) ? $entryType['params'] : array(),
+                        //'types' => $types
+                        'typeDeleted' => false
+                    );
                 }
                 
-                $entryObj = array(
-                    'typeid' => $entryType['typeid'],
-                    'name' => sizeof($typeAttr) > 0 ? $typeAttr->name : $entryType['handle'],
-                    'params' => isset($entryType['params']) ? $entryType['params'] : array()
-                );
                 $entryTypes[] = $entryObj;
             }
         }
@@ -158,7 +172,8 @@ class RelatedentriesautomationField extends Field
             'order'         => 'postDate',
             'orderDir'      => 'asc',
             'limit'         => 0,
-            'entryTypes'    => array()
+            'entryTypes'    => array(),
+            'typesDeleted'   => array()
         ), $value);
         return $value;
     }

@@ -44,3 +44,13 @@
 .body.scroll-me{
 	overflow: auto;
 }
+
+.deleted-types-found{
+	background: #da5a47;
+	color: white;
+	padding: 0.5rem 1rem;
+}
+.deleted-entry-type{
+	color: #da5a47;
+	font-style: italic;
+}
