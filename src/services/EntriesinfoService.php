@@ -70,10 +70,7 @@ class EntriesinfoService extends Component
         $entryFields = array();
         if(is_numeric($typeHandle)){
             $entryType = Craft::$app->sections->getEntryTypeById($typeHandle);
-            if(count($entryType)){
-                // $entryType[0] is an EntryModel
-                $entryFields = $entryType->getFieldLayout()->getFields();
-            }
+            $entryFields = $entryType->getFieldLayout()->getFields();
         } else {
             /**
              * Retrieve any entrytypes that match the $typeHandle
