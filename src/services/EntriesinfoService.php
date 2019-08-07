@@ -160,7 +160,7 @@ class EntriesinfoService extends Component
             foreach($sources as $sourceData){
                 list($type, $sid) = explode(':', $sourceData);
                 if ($type === 'section') {
-                    $section = Craft::$app->sections->getSectionById($sid);
+                    $section = Craft::$app->sections->getSectionByUid($sid);
                     
                     // $criteria = Craft::$app->elements->getCriteria(ElementType::Entry);
                     // $criteria->section = $section->getAttribute('handle');
