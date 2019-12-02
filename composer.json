@@ -2,7 +2,7 @@
     "name": "therefinery/relatedentriesautomation",
     "description": "Provides a field specify selection criteria for providing related entries",
     "type": "craft-plugin",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "keywords": [
         "craft",
         "cms",
