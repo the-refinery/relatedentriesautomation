@@ -68,6 +68,7 @@ class EntriesFilterService extends Component
         ->where('{{%elements}}.enabled = 1 AND ({{%entries}}.expiryDate IS NULL OR {{%entries}}.expiryDate > NOW() )')
         ->andWhere('{{%entries}}.postDate < NOW()')
         ->andWhere('{{%elements}}.revisionId IS NULL')
+        ->andWhere('{{%elements}}.draftId IS NULL')
         ->addOrderBy($this->orderClause($criteria))
         ->distinct() // MySQL 5.7 requires ORDER BY fields to be in select list (unless `ONLY_FULL_GROUP_BY` is deactivated in config)
         ->limit($criteria['limit']);
